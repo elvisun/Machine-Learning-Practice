@@ -1,4 +1,5 @@
 #start here
+import sys
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -10,10 +11,11 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.model_selection import GridSearchCV
 from sklearn.neighbors import KNeighborsClassifier
 
-def main():
+def main(mini):
 
 	rawData = pd.read_csv('train.csv')
-	rawData = rawData.head(1000)
+	if not (mini == 0):
+		rawData = rawData.head(1000)
 	
 	#split into training and cross validating
 	train, test = train_test_split(rawData, test_size = 0.2)
@@ -30,9 +32,9 @@ def main():
 	
 	#print(testData.head())
 	#print(testData.isnull().sum())
-	print (testData.head())
+	#print (testData.head())
 	df = pd.DataFrame(finalModel.predict(testData.as_matrix()))
-	
+
 	testData['ImageID'] = range(1, len(testData) + 1)
 	df['ImageID'] = testData['ImageID']
 	df.columns = ['ImageID', 'label']
@@ -42,4 +44,8 @@ def main():
 	df.to_csv('result.csv', sep=',', encoding='utf-8', header=["ImageID", "label"],  index=False)
 
 if __name__ == '__main__':
-	main()
+	
+	if len(sys.argv) > 1:
+		main(sys.argv[1])
+	else:
+		main(0)
