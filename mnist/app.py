@@ -20,7 +20,7 @@ def main(mini):
 	#split into training and cross validating
 	train, test = train_test_split(rawData, test_size = 0.2)
 	
-	knn = KNeighborsClassifier(n_neighbors = 5)
+	knn = KNeighborsClassifier(n_neighbors = 5, weights = 'distance')
 	print('fitting model...')
 	knn.fit(train.drop('label', axis = 1).as_matrix(), train.label.values)
 	print('cross validating...')
