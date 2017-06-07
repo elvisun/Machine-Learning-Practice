@@ -27,7 +27,7 @@ def main(mini):
 	parameters = {
 	'n_neighbors': [1, 3, 5, 10, 20, 30, 40, 50]
 	}
-	knn = GridSearchCV(knnModel, parameters)
+	knn = GridSearchCV(knnModel, parameters, n_jobs  = 16)
 
 	print('fitting model...')
 	knn.fit(train.drop('label', axis = 1).as_matrix(), train.label.values)
