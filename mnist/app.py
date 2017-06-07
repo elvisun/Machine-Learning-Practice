@@ -20,9 +20,20 @@ def main(mini):
 	#split into training and cross validating
 	train, test = train_test_split(rawData, test_size = 0.2)
 	
-	knn = KNeighborsClassifier(n_neighbors = 30, weights = 'distance')
+
+
+	knnModel = KNeighborsClassifier(weights = 'distance')
+
+	parameters = {
+	'n_neighbors': [1, 3, 5, 10, 20, 30, 40, 50]
+	}
+	knn = GridSearchCV(knnModel, parameters)
+
 	print('fitting model...')
 	knn.fit(train.drop('label', axis = 1).as_matrix(), train.label.values)
+	for i in xrange(len(parameters['n_neighbors'])):
+		print(parameters['n_neighbors'][i])
+		print(knn.cv_results_['mean_test_score'][i])
 	print('cross validating...')
 	knnScore = cross_val_score(knn, test.drop('label', axis = 1).as_matrix(), test.label.values, cv=5)
 	print("KNN Accuracy: %0.2f (+/- %0.2f)" % (knnScore.mean(), knnScore.std() * 2))
