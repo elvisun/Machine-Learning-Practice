@@ -13,6 +13,7 @@ from sklearn.neighbors import KNeighborsClassifier
 def main():
 
 	rawData = pd.read_csv('train.csv')
+	rawData = rawData.head(1000)
 	
 	#split into training and cross validating
 	train, test = train_test_split(rawData, test_size = 0.2)
@@ -26,11 +27,13 @@ def main():
 
 	testData = pd.read_csv('test.csv')
 
-	testData['ImageID'] = range(1, len(testData) + 1)
+	
 	#print(testData.head())
 	#print(testData.isnull().sum())
+	print (testData.head())
 	df = pd.DataFrame(finalModel.predict(testData.as_matrix()))
-
+	
+	testData['ImageID'] = range(1, len(testData) + 1)
 	df['ImageID'] = testData['ImageID']
 	df.columns = ['ImageID', 'label']
 	df = df[df.columns.tolist()[::-1]]
