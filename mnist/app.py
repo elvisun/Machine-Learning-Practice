@@ -21,18 +21,22 @@ def main(mini):
 	train, test = train_test_split(rawData, test_size = 0.2)
 	
 	knn = KNeighborsClassifier(n_neighbors = 5)
+	print('fitting model...')
 	knn.fit(train.drop('label', axis = 1).as_matrix(), train.label.values)
+	print('cross validating...')
 	knnScore = cross_val_score(knn, test.drop('label', axis = 1).as_matrix(), test.label.values, cv=5)
 	print("KNN Accuracy: %0.2f (+/- %0.2f)" % (knnScore.mean(), knnScore.std() * 2))
 
 	finalModel = knn
 
+	print('reading csv...')
 	testData = pd.read_csv('test.csv')
 
 	
 	#print(testData.head())
 	#print(testData.isnull().sum())
 	#print (testData.head())
+	print('predicting...')
 	df = pd.DataFrame(finalModel.predict(testData.as_matrix()))
 
 	testData['ImageID'] = range(1, len(testData) + 1)
@@ -41,6 +45,7 @@ def main(mini):
 	df = df[df.columns.tolist()[::-1]]
 	#print df
 	#print(testData)
+	print('writing to csv...')
 	df.to_csv('result.csv', sep=',', encoding='utf-8', header=["ImageID", "label"],  index=False)
 
 if __name__ == '__main__':
