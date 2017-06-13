@@ -1,0 +1,45 @@
+>>> df.iloc[1]
+a    4
+b    5
+c    6
+Name: 1, dtype: int32
+>>> df.iloc[1:2]
+   a  b  c
+1  4  5  6
+>>> df.iloc[1:]
+   a  b  c
+1  4  5  6
+>>> df
+   a  b  c
+0  1  2  3
+1  4  5  6
+>>> df.iloc[2]
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "C:\Python35\lib\site-packages\pandas\core\indexing.py", line 1328, in __getitem__
+    return self._getitem_axis(key, axis=0)
+  File "C:\Python35\lib\site-packages\pandas\core\indexing.py", line 1749, in _getitem_axis
+    self._is_valid_integer(key, axis)
+  File "C:\Python35\lib\site-packages\pandas\core\indexing.py", line 1638, in _is_valid_integer
+    raise IndexError("single positional indexer is out-of-bounds")
+IndexError: single positional indexer is out-of-bounds
+>>> df.iloc[0]
+a    1
+b    2
+c    3
+Name: 0, dtype: int32
+>>> df.iloc[0:]
+   a  b  c
+0  1  2  3
+1  4  5  6
+>>> np.roll(df.iloc[0:], 1)
+array([[6, 1, 2],
+       [3, 4, 5]])
+>>> np.roll(df.iloc[0:], 1, axis = 1)
+array([[3, 1, 2],
+       [6, 4, 5]])
+>>> np.roll(df.iloc[0:], 1, axis = 0)
+array([[4, 5, 6],
+       [1, 2, 3]])
+>>>
+

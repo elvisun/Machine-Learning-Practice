@@ -42,9 +42,40 @@ def plotResult(history):
 	plt.legend(['train', 'test'], loc='upper left')
 	plt.show()
 
+def graphDigit(data):
+	print(data)
+	label = data[['label']].values[0][0]
+	print(label)
+	pixels = data.drop('label', axis = 1).values
+	pixels = pixels.reshape((28,28))
+	plt.title('Label is {label}'.format(label=label))
+	plt.imshow(pixels, cmap='gray')
+	plt.show()
+
+def synthesisData(df):
+	l = df.shape[0]	#get length
+	for j in range(0, l):
+		print('{} of {} examples'.format(j, l))
+		oldMatrix = df.iloc[[j]].drop('label', axis = 1).values.reshape(28,28)
+		newMatrices = []
+		for _ in [(2, 0), (-2, 0), (0, 2), (0, -2)]:
+			newPixels = np.roll(oldMatrix, _[0], axis = 0)
+			newPixels = np.roll(newPixels, _[1], axis = 1).reshape(1, 28*28)
+			newDF = pd.DataFrame(newPixels, columns = [i for i in range(1, 28*28 + 1)])
+			newDF['label'] = df.iloc[[j]]['label']
+			#print(newDF)
+			df.append(newDF)
+			#graphDigit(newDF)
+	return df
 
 print("Reading csv...")
 rawData = pd.read_csv('train.csv')
+rawData = synthesisData(rawData)
+df.to_csv('extended-data.csv', sep=',', encoding='utf-8', index=False)
+
+sys.exit()
+
+print(rawData.head())
 
 train, test = train_test_split(rawData, test_size = 0.2)
 	
@@ -72,12 +103,13 @@ print(x_test.shape[0], 'test samples')
 model = Sequential()
 
 model.add(Conv2D(512, kernel_size = (3,3), activation='relu', input_shape=(1, 28, 28), padding="same"))
-model.add(Conv2D(256, (3,3), activation = 'relu', padding="same"))
+model.add(Conv2D(400, (2,2), activation = 'relu', padding="same"))
+model.add(Conv2D(256, (2,2), activation = 'relu', padding="same"))
 model.add(MaxPooling2D(pool_size=(2, 2), padding="same"))
-model.add(Dropout(0.25))
+model.add(Dropout(0.5))
 model.add(Flatten())
 model.add(Dense(128, activation='relu'))
-model.add(Dropout(0.25))
+model.add(Dropout(0.5))
 model.add(Dense(10, activation='softmax'))
 
 model.compile(loss=keras.losses.categorical_crossentropy,
